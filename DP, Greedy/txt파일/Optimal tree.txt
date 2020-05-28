@@ -24,7 +24,7 @@ node* tree(int row, int col) {
 }
 void preorder(node* root) {
 	if (root != NULL) {
-		printf("%d ", root->data);
+		printf(" %d", root->data);
 		preorder(root->left);
 		preorder(root->right);
 	}
@@ -70,7 +70,7 @@ int main()
 	node* root = tree(1, n);
 	minavg = A[1][n];
 
-	printf("%.3lf ", minavg);
+	printf("%.3lf", minavg);
 	preorder(root);
 
 	return 0;
