@@ -21,13 +21,13 @@ struct cmp
 	}
 };
 
-int bound(node& x) { // ÇÑ°è°ª ±¸ÇÏ´Â ÇÔ¼ö
+int bound(node& x) { // í•œê³„ê°’ êµ¬í•˜ëŠ” í•¨ìˆ˜
 	bool check_vertex[16] = { 0, };
 	int bound_val = 0;
 	int min_bound;
 	for (int i = 0; i < x.level; i++) {
 		bound_val += weight_matrix[x.path[i + 1]][x.path[i + 2]];
-		check_vertex[x.path[i + 2]] = true; // ¹æ¹®ÇÑ vertex Ç¥½Ã
+		check_vertex[x.path[i + 2]] = true; // ë°©ë¬¸í•œ vertex í‘œì‹œ
 	}
 	for (int i = 1+x.level; i <= n; i++) {
 		if (check_vertex[i] == true)
@@ -46,7 +46,7 @@ int bound(node& x) { // ÇÑ°è°ª ±¸ÇÏ´Â ÇÔ¼ö
 	return bound_val;
 }
 
-int get_length(node x) { // °æ·Î¸¦ ¾Ë ¶§ ÀÌµ¿±æÀÌ±¸ÇÏ´Â ÇÔ¼ö
+int get_length(node x) { // ê²½ë¡œë¥¼ ì•Œ ë•Œ ì´ë™ê¸¸ì´êµ¬í•˜ëŠ” í•¨ìˆ˜
 	int distance = 0;
 	for (int i = 1; i <= n; i++) {
 		distance += weight_matrix[x.path[i]][x.path[i + 1]];
@@ -54,7 +54,7 @@ int get_length(node x) { // °æ·Î¸¦ ¾Ë ¶§ ÀÌµ¿±æÀÌ±¸ÇÏ´Â ÇÔ¼ö
 	return distance;
 }
 
-bool check_path(node x, int i) { // i°¡ path¾È¿¡ ¾ø¾î¾ß ÇÔ, ÀÖÀ¸¸é false ¾øÀ¸¸é true ¹ÝÈ¯
+bool check_path(node x, int i) { // iê°€ pathì•ˆì— ì—†ì–´ì•¼ í•¨, ìžˆìœ¼ë©´ false ì—†ìœ¼ë©´ true ë°˜í™˜
 	int index = 1;
 	while (x.path[index]) {
 		if (x.path[index] == i)
@@ -70,7 +70,7 @@ void copy_array(int* dest, int* src) {
 	}
 }
 
-void insert_path(int x, int* u) { // path ÀÇ ¸¶Áö¸·¿¡ i »ðÀÔ
+void insert_path(int x, int* u) { // path ì˜ ë§ˆì§€ë§‰ì— i ì‚½ìž…
 	for (int i = n; i >= 1; i--) {
 		if (u[i] == 0)
 			continue;

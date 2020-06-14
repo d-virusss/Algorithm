@@ -16,20 +16,20 @@ typedef struct {
 
 struct cmp
 {
-	bool operator()(node &a, node &b) {
+	bool operator()(node& a, node& b) {
 		return a.bound > b.bound;
 	}
 };
 
-int bound(node& x) { // ÇÑ°è°ª ±¸ÇÏ´Â ÇÔ¼ö
+int bound(node& x) { // í•œê³„ê°’ êµ¬í•˜ëŠ” í•¨ìˆ˜
 	bool check_vertex[16] = { 0, };
 	int bound_val = 0;
 	int min_bound;
 	for (int i = 0; i < x.level; i++) {
 		bound_val += weight_matrix[x.path[i + 1]][x.path[i + 2]];
-		check_vertex[x.path[i + 2]] = true; // ¹æ¹®ÇÑ vertex Ç¥½Ã
+		check_vertex[x.path[i + 2]] = true; // ë°©ë¬¸í•œ vertex í‘œì‹œ
 	}
-	for (int i = 1+x.level; i <= n; i++) {
+	for (int i = 1 + x.level; i <= n; i++) {
 		if (check_vertex[i] == true)
 			continue;
 		min_bound = 78978999;
@@ -46,7 +46,7 @@ int bound(node& x) { // ÇÑ°è°ª ±¸ÇÏ´Â ÇÔ¼ö
 	return bound_val;
 }
 
-int get_length(node x) { // °æ·Î¸¦ ¾Ë ¶§ ÀÌµ¿±æÀÌ±¸ÇÏ´Â ÇÔ¼ö
+int get_length(node x) { // ê²½ë¡œë¥¼ ì•Œ ë•Œ ì´ë™ê¸¸ì´êµ¬í•˜ëŠ” í•¨ìˆ˜
 	int distance = 0;
 	for (int i = 1; i <= n; i++) {
 		distance += weight_matrix[x.path[i]][x.path[i + 1]];
@@ -54,7 +54,7 @@ int get_length(node x) { // °æ·Î¸¦ ¾Ë ¶§ ÀÌµ¿±æÀÌ±¸ÇÏ´Â ÇÔ¼ö
 	return distance;
 }
 
-bool check_path(node x, int i) { // i°¡ path¾È¿¡ ¾ø¾î¾ß ÇÔ, ÀÖÀ¸¸é false ¾øÀ¸¸é true ¹İÈ¯
+/*bool check_path(node x, int i) { // iê°€ pathì•ˆì— ì—†ì–´ì•¼ í•¨, ìˆìœ¼ë©´ false ì—†ìœ¼ë©´ true ë°˜í™˜
 	int index = 1;
 	while (x.path[index]) {
 		if (x.path[index] == i)
@@ -70,7 +70,7 @@ void copy_array(int* dest, int* src) {
 	}
 }
 
-void insert_path(int x, int* u) { // path ÀÇ ¸¶Áö¸·¿¡ i »ğÀÔ
+void insert_path(int x, int* u) { // path ì˜ ë§ˆì§€ë§‰ì— i ì‚½ì…
 	for (int i = n; i >= 1; i--) {
 		if (u[i] == 0)
 			continue;
@@ -80,14 +80,14 @@ void insert_path(int x, int* u) { // path ÀÇ ¸¶Áö¸·¿¡ i »ğÀÔ
 }
 
 void complete_tour(node& x) {
-	int sum = n*(n + 1) / 2;
+	int sum = n * (n + 1) / 2;
 	for (int i = 1; i <= n; i++) {
 		sum -= x.path[i];
 	}
 
 	insert_path(sum, x.path);
 	insert_path(1, x.path);
-}
+}*/
 
 void TSP() {
 	priority_queue <node, vector<node>, cmp > pq;
@@ -106,17 +106,51 @@ void TSP() {
 		if (tmp.bound < min_length) {
 			u.level = tmp.level + 1;
 			for (int i = 2; i <= n; i++) {
-				if (check_path(tmp, i)) {
-					copy_array(u.path, tmp.path);
-					insert_path(i, u.path);
+				int index = 1;
+				bool check_path = true;
+				while (tmp.path[index]) { // pathì— iê°€ í¬í•¨ë˜ì–´ ìˆëŠ”ì§€ í™•ì¸
+					if (tmp.path[index] == i) {
+						check_path = false; 
+						break;
+					}
+					index++;
+				}
+				if (check_path) {
+					for (int i = 1; i <= 16; i++) { // u.path = v.path
+						u.path[i] = tmp.path[i];
+					}
+					for (int j = n; j >= 1; j--) { // u.pathì˜ ë§ˆì§€ë§‰ì— i ì¶”ê°€
+						if (u.path[j] == 0)
+							continue;
+						else
+							u.path[j + 1] = i; break;
+					}
 					if (u.level == n - 2) {
-						complete_tour(u);
-						if (get_length(u) < min_length) {
+						int sum = n * (n + 1) / 2;
+						for (int i = 1; i <= n; i++) { // pathì— ì¶”ê°€ë˜ì§€ ì•Šì€ vertex íƒìƒ‰
+							sum -= u.path[i];
+						}
+
+						for (int j = n; j >= 1; j--) { // pathì˜ ë§¨ ë’¤ì— ë§ˆì§€ë§‰ ë‚¨ì€ vertex ì¶”ê°€
+							if (u.path[j] == 0)
+								continue;
+							else
+								u.path[j + 1] = sum; break;
+						}
+						for (int j = n; j >= 1; j--) { // pathì˜ ë§¨ ë’¤ì— 1 ì¶”ê°€
+							if (u.path[j] == 0)
+								continue;
+							else
+								u.path[j + 1] = 1; break;
+						}
+						if (get_length(u) < min_length) { // ê¸¸ì´ ê³„ì‚° í›„ min_length ê°±ì‹ 
 							min_length = get_length(u);
-							copy_array(opt_tour, u.path);
+							for (int i = 1; i <= 16; i++) {
+								opt_tour[i] = u.path[i];
+							}
 						}
 					}
-					else {
+					else { // ë§ˆì§€ë§‰ ë…¸ë“œ ì•„ë‹ ê²½ìš°, boundê°’ êµ¬í•˜ê³  PQì— ë…¸ë“œ ì‚½ì…
 						u.bound = bound(u);
 						if (u.bound < min_length)
 							pq.push(u);
@@ -129,7 +163,7 @@ void TSP() {
 
 void answer() {
 	cout << min_length << '\n';
-	for (int i = 1; i <= n+1; i++) {
+	for (int i = 1; i <= n + 1; i++) {
 		cout << opt_tour[i] << ' ';
 	}
 }
